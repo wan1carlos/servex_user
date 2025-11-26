@@ -86,39 +86,44 @@ async loadData()
   }
 
   async loadMap() {
-
+    if ((window as any).cordova) {
       this.geolocation.getCurrentPosition().then((resp) => {
-            
-      // Initialize Leaflet map
-      if (!this.map) {
-        this.map = L.map(this.mapElement.nativeElement).setView([this.data.lat, this.data.lng], 16);
+        this.initializeMap();
+      }).catch((error) => {
+        console.log('Error getting Cordova location', error);
+        this.initializeMap();
+      });
+    } else {
+      this.initializeMap();
+    }
+  }
 
-        // Add OpenStreetMap France tile layer for HTTPS and CORS compatibility
-        L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors',
-          subdomains: ['a', 'b', 'c'],
-          maxZoom: 19
-        }).addTo(this.map);
-      }
+  private initializeMap() {
+    // Initialize Leaflet map
+    if (!this.map) {
+      this.map = L.map(this.mapElement.nativeElement).setView([this.data.lat, this.data.lng], 16);
 
-      // Remove existing routing control if any
-      if (this.routingControl) {
-        this.map.removeControl(this.routingControl);
-      }
+      // Add OpenStreetMap France tile layer for HTTPS and CORS compatibility
+      L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        subdomains: ['a', 'b', 'c'],
+        maxZoom: 19
+      }).addTo(this.map);
+    }
 
-      if(this.data.st == 0 ||  this.data.st == 1)
-      {
-    	  this.startNavigating(this.data.order.slat, this.data.order.slng);
-      }
-      else
-      {
-    	  this.startNavigating(this.data.lat, this.data.lng);
-      }
-    
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });    
+    // Remove existing routing control if any
+    if (this.routingControl) {
+      this.map.removeControl(this.routingControl);
+    }
 
+    if(this.data.st == 0 ||  this.data.st == 1)
+    {
+      this.startNavigating(this.data.order.slat, this.data.order.slng);
+    }
+    else
+    {
+      this.startNavigating(this.data.lat, this.data.lng);
+    }
   }
 
   startNavigating(lat,lng){

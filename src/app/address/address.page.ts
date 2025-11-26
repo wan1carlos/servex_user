@@ -82,71 +82,98 @@ export class AddressPage implements OnInit {
     
     console.log("Loading Leaflet map");
 
-    this.geolocation.getCurrentPosition().then((resp) => {
-      
-      this.currentLat = resp.coords.latitude;
-      this.currentLng = resp.coords.longitude;
+    if ((window as any).cordova) {
+      this.geolocation.getCurrentPosition().then((resp) => {
+        this.currentLat = resp.coords.latitude;
+        this.currentLng = resp.coords.longitude;
+        this.initializeMap();
+      }).catch((error) => {
+        console.log('Error getting Cordova location', error);
+        this.useBrowserGeolocation();
+      });
+    } else {
+      this.useBrowserGeolocation();
+    }
+  }
 
-      // Initialize Leaflet map only if not already created
-      if (!this.map) {
-        this.map = L.map(this.mapElement.nativeElement).setView([this.currentLat, this.currentLng], 16);
+  private useBrowserGeolocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((resp) => {
+        this.currentLat = resp.coords.latitude;
+        this.currentLng = resp.coords.longitude;
+        this.initializeMap();
+      }, (error) => {
+        console.log('Error getting browser location', error);
+        // Use default location if geolocation fails
+        this.currentLat = 0;
+        this.currentLng = 0;
+        this.initializeMap();
+      });
+    } else {
+      console.log('Geolocation not supported');
+      this.currentLat = 0;
+      this.currentLng = 0;
+      this.initializeMap();
+    }
+  }
 
-        // Add OpenStreetMap France tile layer for HTTPS and CORS compatibility
-        L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors',
-          subdomains: ['a', 'b', 'c'],
-          maxZoom: 19
-        }).addTo(this.map);
+  private initializeMap() {
+    // Initialize Leaflet map only if not already created
+    if (!this.map) {
+      this.map = L.map(this.mapElement.nativeElement).setView([this.currentLat, this.currentLng], 16);
 
-        // Fix map size issues
-        setTimeout(() => {
-          if (this.map) {
-            this.map.invalidateSize();
-          }
-        }, 100);
+      // Add OpenStreetMap France tile layer for HTTPS and CORS compatibility
+      L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        subdomains: ['a', 'b', 'c'],
+        maxZoom: 19
+      }).addTo(this.map);
 
-        // Add a draggable marker at center
-        this.marker = L.marker([this.currentLat, this.currentLng], {
-          draggable: false,
-          icon: L.icon({
-            iconUrl: 'assets/map-marker.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 32]
-          })
-        }).addTo(this.map);
+      // Fix map size issues
+      setTimeout(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      }, 100);
 
-        // Update address when map is moved
-        this.map.on('moveend', () => {
-          if (this.map && this.map.getCenter) {
-            try {
-              const center = this.map.getCenter();
-              if (center) {
-                this.currentLat = center.lat;
-                this.currentLng = center.lng;
-                this.marker.setLatLng([this.currentLat, this.currentLng]);
-                this.getAddressFromCoords(this.currentLat, this.currentLng);
-              }
-            } catch (e) {
-              console.error('Error getting map center:', e);
+      // Add a draggable marker at center
+      this.marker = L.marker([this.currentLat, this.currentLng], {
+        draggable: false,
+        icon: L.icon({
+          iconUrl: 'assets/map-marker.png',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32]
+        })
+      }).addTo(this.map);
+
+      // Update address when map is moved
+      this.map.on('moveend', () => {
+        if (this.map && this.map.getCenter) {
+          try {
+            const center = this.map.getCenter();
+            if (center) {
+              this.currentLat = center.lat;
+              this.currentLng = center.lng;
+              this.marker.setLatLng([this.currentLat, this.currentLng]);
+              this.getAddressFromCoords(this.currentLat, this.currentLng);
             }
+          } catch (e) {
+            console.error('Error getting map center:', e);
           }
-        });
-      } else {
-        // Map already exists, just update position
-        this.map.setView([this.currentLat, this.currentLng], 16);
-        this.marker.setLatLng([this.currentLat, this.currentLng]);
-        setTimeout(() => {
-          if (this.map) {
-            this.map.invalidateSize();
-          }
-        }, 100);
-      }
+        }
+      });
+    } else {
+      // Map already exists, just update position
+      this.map.setView([this.currentLat, this.currentLng], 16);
+      this.marker.setLatLng([this.currentLat, this.currentLng]);
+      setTimeout(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      }, 100);
+    }
 
-      this.getAddressFromCoords(this.currentLat, this.currentLng);
- 
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });
+    this.getAddressFromCoords(this.currentLat, this.currentLng);
   }
  
 
