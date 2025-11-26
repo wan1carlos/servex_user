@@ -1,0 +1,158 @@
+<ion-header class="ion-no-border">
+<ion-toolbar color="light">
+<ion-buttons slot="end" >
+<ion-menu-button color="primary"></ion-menu-button>
+</ion-buttons>
+<ion-title *ngIf="text && data" routerLink="/city" routerDirection="forward"><ion-icon name="location-outline"></ion-icon> {{ address }}</ion-title>
+</ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" #content>
+
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+<!--Display loading-->
+<ion-list id="skeleton" *ngIf="!data">
+<ion-list-header>
+<ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+</ion-list-header>
+
+<ion-item *ngFor="let fake of fakeData">
+<ion-thumbnail slot="start">
+<ion-skeleton-text></ion-skeleton-text>
+</ion-thumbnail>
+<ion-label>
+<h3>
+<ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+</h3>
+<p>
+<ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+</p>
+<p>
+<ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+</p>
+</ion-label>
+</ion-item>
+
+</ion-list>
+
+<!--Main content start here-->
+
+<span *ngIf="data">
+
+<ion-searchbar mode="ios" (click)="search()" placeholder="{{ text.search }}"></ion-searchbar>
+
+<div style="height: auto;background-color: white;width: 100%;margin-left: -3%">
+<ion-slides pager="false" [options]="CateOption" #slideone style="padding-top: 10px">
+<ion-slide *ngFor="let cate of data.category" (click)="cateData(cate.id)">
+<span><img src="{{ cate.img }}" style="width: 50px;border-radius: 10px"><small style="font-size: 11px;display: block">{{ cate.name }}</small></span>
+</ion-slide>
+</ion-slides>
+</div>
+
+<ion-slides pager="true" [options]="BannerOption" #slideone autoplay="1000" style="margin-top: 15px">
+<ion-slide *ngFor="let banner of data.slider" (click)="bannerLink(banner)">
+  
+<img src="{{ banner.img }}" style="border-radius: 10px;width: 90%;">
+
+</ion-slide>
+</ion-slides>
+
+<br>
+<p style="padding: 0px 10px;margin-top: 0%;font-size: 14px;font-weight:bold">{{ text.trend_in }}</p>
+
+<ion-slides pager="false" [options]="TrendOption" #slideone style="margin-top: -2%">
+<ion-slide *ngFor="let trend of data.trend" (click)="item(trend)">
+  
+<ion-row style="text-align: left;">
+<ion-col size="12"><img src="{{ trend.img }}" style="border-top-right-radius: 10px;border-top-left-radius: 10px;">
+<ion-badge style="position: absolute;z-index: 99;top:0px;right:0px" *ngIf="trend.rating > 0">{{ trend.rating }} <ion-icon name="star"></ion-icon></ion-badge>
+</ion-col>
+<ion-col size="12">
+
+<ion-row style="margin-top: -4%;">
+<ion-col size="12" style="font-size: 14px;color:black;"><b>{{ trend.name }}</b></ion-col>
+<ion-col size="12" style="font-size: 12px;margin-top: -2%;color:gray">{{ trend.cates }}</ion-col>
+
+</ion-row>
+
+</ion-col>
+</ion-row>
+
+
+</ion-slide>
+</ion-slides>
+
+<div class="ion-padding" style="margin-top: -2%">
+<img src="{{ b.img }}" style="border-radius: 10px" *ngFor="let b of data.banner" (click)="bannerLink(b)">
+</div>
+
+<p style="padding: 0px 10px;margin-top: 0%;font-size: 14px;font-weight:bold">{{ text.reco }}</p>
+
+<ion-slides pager="false" [options]="TrendOption" #slideone style="margin-top:-2%">
+<ion-slide *ngFor="let random of data.random" (click)="item(random)">
+  
+<ion-row style="text-align: left;">
+<ion-col size="12"><img src="{{ random.img }}" style="border-top-right-radius: 10px;border-top-left-radius: 10px;">
+<ion-badge style="position: absolute;z-index: 99;top:0px;right:0px" *ngIf="random.rating > 0">{{ random.rating }} <ion-icon name="star"></ion-icon></ion-badge>
+</ion-col>
+<ion-col size="12">
+
+<ion-row style="margin-top: -4%;">
+<ion-col size="12" style="font-size: 14px;color:black;"><b>{{ random.name }}</b></ion-col>
+<ion-col size="12" style="font-size: 12px;margin-top: -2%;color:gray">{{ random.cates }}</ion-col>
+
+</ion-row>
+
+</ion-col>
+</ion-row>
+
+</ion-slide>
+</ion-slides>
+
+<div style="background-color:#f3f3f3;padding: 5px 5px;width: 95%;border-top-right-radius: 10px;border-bottom-right-radius: 10px;font-size: 12px;margin-top: 3%;">
+<b>{{ text.sort_by }} </b>
+<ion-chip [color]="filterPress == 1 ? 'success' : 'danger'" (click)="filterData(1)">{{ text.rating }}</ion-chip>
+<ion-chip [color]="filterPress == 2 ? 'success' : 'danger'" (click)="filterData(2)">{{ text.nearest }}</ion-chip>
+<ion-chip [color]="filterPress == 3 ? 'success' : 'danger'" (click)="filterData(3)">{{ text.new_arrival }}</ion-chip>
+</div>
+
+<div class="ion-padding" style="font-size: 12px;margin-top: -4%;">
+
+<div style="margin-bottom: 10px" *ngIf="data.running > 0" >
+<p style="padding: 15px 10px;background-color: #f47720;border-radius: 10px;margin-bottom: -2%;color:white" routerLink="/done" routerDirection="forward">{{ text.previous_order }} <ion-icon name="arrow-forward-outline" style="float: right"></ion-icon></p>
+</div>
+
+</div>
+
+<div style="background-color: #f4f5f8;">
+<br>
+<ion-card mode="ios" style="background-color: white;margin-top: -2%;" *ngFor="let store of storeData" (click)="item(store)">
+<img src="{{ store.img }}">
+
+<ion-card-header style="margin-top: -4%;">
+<ion-card-title style="font-size: 20px">{{ store.name }} <ion-badge style="float: right" *ngIf="store.rating > 0">{{ store.rating }} <ion-icon name="star"></ion-icon></ion-badge></ion-card-title>
+</ion-card-header>
+
+<ion-row style="margin-top: -5%;padding: 0px 15px;margin-bottom: 10px;">
+<ion-col size="9" style="font-size: 12px">{{ store.cates }}</ion-col>
+<ion-col size="3" style="font-size: 11px;text-align:right" *ngIf="store.km > 100">100+{{ text.km }}</ion-col>
+<ion-col size="3" style="font-size: 11px;text-align:right" *ngIf="store.km < 100">{{ store.km }}{{ text.km }}</ion-col>
+</ion-row>
+</ion-card>
+<br>
+</div>
+</span>
+</ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="data">
+<ion-toolbar color="light">
+<ion-row style="text-align: center;">
+<ion-col size="4" (click)="setType(0)" [class]="store_type == 0 ? 'act' : 'dark'"><ion-icon name="rocket-outline" [color]="store_type == 0 ? 'primary' : 'dark'"></ion-icon><small style="display:block">{{ text.delivery_title }}</small></ion-col>
+<ion-col size="4" (click)="setType(1)" [class]="store_type == 1 ? 'act' : 'dark'"><ion-icon name="restaurant-outline" [color]="store_type == 1 ? 'primary' : 'dark'"></ion-icon><small style="display:block">{{ text.dinein_title }}</small></ion-col>
+<ion-col size="4" routerLink="/cart" routerDirection="forward"><ion-icon name="bag-handle-outline"></ion-icon><small style="color:red;font-size: 12px" *ngIf="data.count > 0">{{ data.count }}</small><small style="display:block">Cart </small></ion-col>
+</ion-row>
+</ion-toolbar>
+</ion-footer>

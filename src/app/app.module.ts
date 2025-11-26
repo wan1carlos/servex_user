@@ -8,6 +8,16 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { Stripe } from '@ionic-native/stripe/ngx';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { OptionPageModule } from './option/option.module';
+import { OfferPageModule } from './offer/offer.module';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,11 +25,21 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    OptionPageModule,
+    OfferPageModule,
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    Stripe,
+    OneSignal,
+    NativeGeocoder,
+    Geolocation,
+    PayPal,
+    InAppBrowser,
+    PhotoViewer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
