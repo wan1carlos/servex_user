@@ -21,7 +21,7 @@
     "@angular/router": "~10.0.0",
     "@awesome-cordova-plugins/core": "^5.1.0",
     "@awesome-cordova-plugins/in-app-browser": "5.36.0",
-    "@awesome-cordova-plugins/photo-viewer": "^5.37.2",
+    "@awesome-cordova-plugins/photo-viewer": "5.36.0",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/geolocation": "^5.36.0",
     "@ionic-native/local-notifications": "^5.34.0",
