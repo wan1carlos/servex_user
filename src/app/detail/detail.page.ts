@@ -93,9 +93,10 @@ async loadData()
       if (!this.map) {
         this.map = L.map(this.mapElement.nativeElement).setView([this.data.lat, this.data.lng], 16);
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors',
+        // Add OpenStreetMap France tile layer for HTTPS and CORS compatibility
+        L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          subdomains: ['a', 'b', 'c'],
           maxZoom: 19
         }).addTo(this.map);
       }

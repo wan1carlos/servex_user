@@ -179,7 +179,7 @@ bannerLink(banner)
 {
   if(banner.link_to == 1)
   {
-    this.nav.navigateForward('/item/'+banner.link_id);
+    this.nav.navigateForward('/item/'+banner.link_id+'/0');
   }
   else if(banner.link_to == 2)
   {

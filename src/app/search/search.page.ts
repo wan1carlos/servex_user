@@ -52,7 +52,7 @@ searchQ:any;
     
     if(s.item == false)
     {
-     this.nav.navigateForward('/item/'+s.id);
+     this.nav.navigateForward('/item/'+s.id+'/0');
     }
     else
     {
@@ -76,7 +76,7 @@ searchQ:any;
   {
     if(store.open)
     {
-      this.nav.navigateForward('/item/'+store.id);
+      this.nav.navigateForward('/item/'+store.id+'/0');
     }
   }
 }
