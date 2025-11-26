@@ -38,11 +38,9 @@ lid:any = '0';
   ionViewDidEnter()
   {
 
-    this.subscription = this.platform.backButton.subscribe(()=>{
-          
-        this.presentAlertConfirm();
-
-      });
+    this.subscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.presentAlertConfirm();
+    });
   }
 
   ionViewWillLeave(){
