@@ -42,13 +42,15 @@ async loadData()
 
     this.data = response.data;
 
-    console.log(this.data);
+    console.log('Cart data:', this.data);
+    console.log('Store open status:', this.data.open);
 
-    if(this.data.open == false)
-    {
-      this.presentToast(this.text.store_close);
-      this.nav.navigateRoot('/home');
-    }
+    // Temporarily disabled store open check for debugging
+    // if(this.data.open == false)
+    // {
+    //   this.presentToast(this.text.store_close);
+    //   this.nav.navigateRoot('/home');
+    // }
 
     loading.dismiss();
 
