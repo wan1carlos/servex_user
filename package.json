@@ -36,7 +36,7 @@
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
     "ng2-search-filter": "^0.5.1",
-    "rxjs": "^7.3.0",
+    "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },
