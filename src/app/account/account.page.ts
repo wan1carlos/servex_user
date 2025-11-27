@@ -46,13 +46,11 @@ async loadData()
     await loading.present();
 
     this.server.userInfo(localStorage.getItem('user_id')).subscribe((response:any) => {
-
-    this.data = response.data;
-
-    localStorage.setItem('user_data', JSON.stringify(response.data));
-
-    loading.dismiss();
-
+      this.data = response.data;
+      localStorage.setItem('user_data', JSON.stringify(response.data));
+      // Dispatch storage event to update menu/sidebar
+      window.dispatchEvent(new Event('storage'));
+      loading.dismiss();
     });
   }
 
@@ -69,8 +67,11 @@ async loadData()
 
 logout()
 {
-  localStorage.setItem('user_id',null);
-
+  // Force full localStorage clear to prevent stale session
+  localStorage.clear();
   this.nav.navigateRoot('/home');
+  setTimeout(() => {
+    window.location.reload();
+  }, 300);
 }
 }

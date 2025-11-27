@@ -139,15 +139,23 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    
-    if(localStorage.getItem('user_data') && localStorage.getItem('user_data') != undefined && localStorage.getItem('user_data') != 'null')
-    {
-      this.userData = JSON.parse(localStorage.getItem('user_data'));
-    }
-
+    this.updateUserData();
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
+    }
+    // Listen for navigation events to update userData after logout
+    window.addEventListener('storage', () => {
+      this.updateUserData();
+    });
+  }
+
+  updateUserData() {
+    const userDataStr = localStorage.getItem('user_data');
+    if (userDataStr && userDataStr !== 'undefined' && userDataStr !== 'null') {
+      this.userData = JSON.parse(userDataStr);
+    } else {
+      this.userData = null;
     }
   }
   
