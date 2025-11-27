@@ -15,8 +15,8 @@ import 'leaflet-routing-machine';
 })
 export class DetailPage {
 
-@ViewChild('map',{static:false}) mapElement: ElementRef;
-@ViewChild('directionsPanel',{static:false}) directionsPanel: ElementRef;
+@ViewChild('map', { static: false }) mapElement!: ElementRef;
+@ViewChild('directionsPanel', { static: false }) directionsPanel!: ElementRef;
 
 data:any
 text:any;
@@ -49,8 +49,7 @@ tm:any;
     clearInterval(this.intr);
   }
 
-  ionViewWillEnter()
-  {
+  ngAfterViewInit() {
     this.loadData();
   }
 
@@ -99,40 +98,71 @@ async loadData()
   }
 
   private initializeMap() {
-    // Initialize Leaflet map
-    if (!this.map) {
-      this.map = L.map(this.mapElement.nativeElement).setView([this.data.lat, this.data.lng], 16);
-
-      // Add OpenStreetMap France tile layer for HTTPS and CORS compatibility
-      L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        subdomains: ['a', 'b', 'c'],
-        maxZoom: 19
-      }).addTo(this.map);
+    // Safety checks for map element and data
+    if (!this.mapElement || !this.mapElement.nativeElement) {
+      console.error('Map element not available');
+      return;
     }
+    if (!this.data || this.data.lat == null || this.data.lng == null) {
+      console.error('Map data missing lat/lng');
+      return;
+    }
+
+    // Remove previous map instance if exists (for hot reloads or navigation)
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
+
+    // Initialize Leaflet map
+    this.map = L.map(this.mapElement.nativeElement, {
+      center: [this.data.lat, this.data.lng],
+      zoom: 16,
+      zoomControl: true,
+      attributionControl: true
+    });
+
+    // Use OpenStreetMap standard HTTPS tile layer for best compatibility
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(this.map);
 
     // Remove existing routing control if any
     if (this.routingControl) {
       this.map.removeControl(this.routingControl);
     }
 
-    if(this.data.st == 0 ||  this.data.st == 1)
-    {
-      this.startNavigating(this.data.order.slat, this.data.order.slng);
-    }
-    else
-    {
-      this.startNavigating(this.data.lat, this.data.lng);
+    if (this.data.st == 0 || this.data.st == 1) {
+      if (this.data.order && this.data.order.slat != null && this.data.order.slng != null) {
+        this.startNavigating(this.data.order.slat, this.data.order.slng);
+      }
+    } else {
+      if (this.data.lat != null && this.data.lng != null) {
+        this.startNavigating(this.data.lat, this.data.lng);
+      }
     }
   }
 
-  startNavigating(lat,lng){
+  ngOnDestroy() {
+    if (this.intr) {
+      clearInterval(this.intr);
+    }
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
+  }
+
+  startNavigating(lat: number, lng: number) {
 
     // Use Leaflet Routing Machine for directions
     this.routingControl = (L as any).Routing.control({
       waypoints: [
-        L.latLng(parseFloat(lat), parseFloat(lng)),
-        L.latLng(parseFloat(this.data.order.lat), parseFloat(this.data.order.lng))
+        L.latLng(lat, lng),
+        (this.data.order && this.data.order.lat != null && this.data.order.lng != null)
+          ? L.latLng(this.data.order.lat, this.data.order.lng)
+          : L.latLng(lat, lng)
       ],
       routeWhileDragging: false,
       showAlternatives: false,
