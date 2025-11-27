@@ -8,6 +8,7 @@ import { SearchPageRoutingModule } from './search-routing.module';
 
 import { SearchPage } from './search.page';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { TagFilterPipe } from './tag-filter.pipe';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     SearchPageRoutingModule,
     Ng2SearchPipeModule
   ],
-  declarations: [SearchPage]
+  declarations: [SearchPage, TagFilterPipe]
 })
 export class SearchPageModule {}

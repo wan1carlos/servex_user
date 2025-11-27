@@ -47,7 +47,7 @@
 <ion-list *ngIf="q && q.length > 2 && !data">
 <ion-list-header>Search result for <b>&nbsp;{{ q }}</b></ion-list-header>
 
-<ion-item *ngFor="let s of store | filter:q" detail (click)="searchPage(s)">
+<ion-item *ngFor="let s of store | tagFilter:q" detail (click)="searchPage(s)">
 <ion-thumbnail slot="start">
     <img src="{{ s.img }}" style="border-radius: 6px">
   </ion-thumbnail>

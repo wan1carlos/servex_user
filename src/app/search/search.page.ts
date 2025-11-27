@@ -24,6 +24,11 @@ searchQ:any;
    this.trend = JSON.parse(localStorage.getItem('trend_data'));
    this.store = JSON.parse(localStorage.getItem('all_data'));
 
+   // Combine stores and trending items for search
+   if (this.trend && Array.isArray(this.trend)) {
+     this.store = [...(this.store || []), ...this.trend.map(item => ({ ...item, item: true }))];
+   }
+
   }
 
   ngOnInit()
