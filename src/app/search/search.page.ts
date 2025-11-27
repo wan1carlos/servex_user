@@ -74,9 +74,10 @@ searchQ:any;
 
   item(store)
   {
-    if(store.open)
-    {
+    // Temporarily allow navigation to all stores regardless of open status
+    // if(store.open)
+    // {
       this.nav.navigateForward('/item/'+store.id+'/0');
-    }
+    // }
   }
 }

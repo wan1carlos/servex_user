@@ -71,7 +71,7 @@
 
 <ion-col size="12" style="color:black;font-weight: bold">{{ store.name }}</ion-col>
 <ion-col size="12" style="margin-top: -5%"><small style="color:#a9a9a9">{{ store.address }}</small></ion-col>
-<ion-col size="12" *ngIf="!store.open"><small style="color:red">{{ text.store_close }}</small></ion-col>
+<ion-col size="12" *ngIf="!store.open" style="display: none;"><small style="color:red">{{ text.store_close }}</small></ion-col>
 
 </ion-row>
 

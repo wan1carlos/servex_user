@@ -149,10 +149,11 @@ export class HomePage implements OnInit {
 
   item(store)
   {
-    if(store.open)
-    {
+    // Temporarily allow navigation to all stores regardless of open status
+    // if(store.open)
+    // {
       this.nav.navigateForward('/item/'+store.id+'/'+this.store_type);
-    }
+    // }
   }
 
   search()
